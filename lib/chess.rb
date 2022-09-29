@@ -34,7 +34,7 @@ class Board
         @blankrow6 = [@white_square, @black_square, @white_square, @black_square, @white_square, @black_square, @white_square, @black_square]
         @blankrow7 = [@black_square, @white_square, @black_square, @white_square, @black_square, @white_square, @black_square, @white_square]
         @blankrow8 = [@white_square, @black_square, @white_square, @black_square, @white_square, @black_square, @white_square, @black_square]
-
+        @playerturn = 0
     end
 
     def print_board
@@ -64,10 +64,9 @@ class Board
 
     end
 
-    def move_to_second_square(first_square, second_square)
-        unless valid_move?(first_square, second_square)
-            return false
-        end
+    
+
+    def reassignment(first_square, second_square)
         if second_square[0] == 'a'
             column = 0
         elsif second_square[0] == 'b'
@@ -147,6 +146,11 @@ class Board
     end
     
     def valid_move?(start, finish)
+        if start == finish
+            return false
+        elsif open_square?(start)
+            return false
+        end
         start_letter_number = start[0].bytes
         finish_letter_number = finish[0].bytes
         if open_square?(finish)
@@ -166,14 +170,40 @@ class Board
                 elsif (finish.include?(start[0]) && finish.include?((start[1].to_i - 1).to_s))
                     return true
                 end
-            elsif coordinate_to_row(start) == @white_knight || coordinate_to_row == @black_knight
+            elsif coordinate_to_row(start) == @white_knight || coordinate_to_row(start) == @black_knight
                 if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i - finish[1].to_i).abs == 2
                     return true
                 elsif (start_letter_number[0] - finish_letter_number[0]).abs == 2 && (start[1].to_i - finish[1].to_i).abs == 1
                     return true
                 end
+            elsif coordinate_to_row(start) == @white_rook || coordinate_to_row(start) == @black_rook
+                if (finish.include?(start[0]))
+                    first_letter = start[0]
+                    a = start[1].to_i
+                    b = finish[1].to_i
+                    until a == b
+                        a += 1
+                        a = a.to_s
+                        new_coordinate = first_letter + a
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                        a = a.to_i
+                    end
+                    return true
+                elsif (finish.include?(start[1]))
+                end
+            elsif coordinate_to_row(start) == @white_bishop || coordinate_to_row(start) == @black_bishop
+            elsif coordinate_to_row(start) == @white_queen || coordinate_to_row(start) == @black_queen
+            elsif coordinate_to_row(start) == @white_king || coordinate_to_row(start) == @black_king
             end
         end
+    end
+
+    def check?
+    end
+
+    def check_mate?
     end
 
     def coordinate_to_row(coordinate)
@@ -235,19 +265,33 @@ class Board
     end
 
     def play_game
-        puts "Which piece would you like to move? Enter a coordinate (e.g. a3)"
-        starting_move = gets.chomp.split('')
-        p starting_move
-        puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
-        ending_move = gets.chomp.split('')
-
-        move_to_second_square(starting_move, ending_move)
         print_board
+        i = 0
+        until i == 5
+            if @playerturn % 2 == 0
+                turn = 1
+            else
+                turn = 2
+            end
+            puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
+            starting_move = gets.chomp
+            puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
+            ending_move = gets.chomp
+            until valid_move?(starting_move, ending_move)
+                puts "That is an invalid move, try again"
+                puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
+                starting_move = gets.chomp
+                puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
+                ending_move = gets.chomp
+            end
+            reassignment(starting_move, ending_move)
+            print_board
+            @playerturn += 1
+            i += 1
+        end
         ##until move()
         ##end
     end
 end
 board = Board.new
-board.move_to_second_square('a2', 'a4')
-board.move_to_second_square('a7', 'a5')
-board.print_board
+board.play_game

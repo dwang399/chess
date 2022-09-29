@@ -34,6 +34,7 @@ describe Board do
             board = Board.new
             expect(board.valid_move?('g1', 'i3')).not_to be true
         end
+
     end
 
     describe '#move_to_second_square' do
