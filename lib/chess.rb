@@ -192,6 +192,15 @@ class Board
                     end
                     return true
                 elsif (finish.include?(start[1]))
+                    until start_letter_number[0] == finish_letter_number[0]
+                        start_letter_number[0] += 1
+                        row_letter = start_letter_number[0].chr
+                        new_coordinate = row_letter + start[1]
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                    end
+                    return true
                 end
             elsif coordinate_to_row(start) == @white_bishop || coordinate_to_row(start) == @black_bishop
             elsif coordinate_to_row(start) == @white_queen || coordinate_to_row(start) == @black_queen
@@ -273,7 +282,7 @@ class Board
             else
                 turn = 2
             end
-            puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
+            puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3), or type save to save"
             starting_move = gets.chomp
             puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
             ending_move = gets.chomp
