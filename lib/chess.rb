@@ -203,6 +203,29 @@ class Board
                     return true
                 end
             elsif coordinate_to_row(start) == @white_bishop || coordinate_to_row(start) == @black_bishop
+                a = start[1].to_i
+                b = finish[1].to_i
+                if (a - b).abs != (start_letter_number[0] - finish_letter_number[0]).abs
+                    return false
+                end
+                until start_letter_number[0] == finish_letter_number[0]
+                    if a < b
+                        a += 1
+                    elsif b < a
+                        a -= 1
+                    end
+                    if start_letter_number[0] < finish_letter_number[0]
+                        start_letter_number[0] += 1
+                    elsif start_letter_number[0] > finish_letter_number[0]
+                        start_letter_number[0] -= 1
+                    end
+                    row_letter = start_letter_number[0].chr
+                    new_coordinate = row_letter + a.to_s
+                    unless open_square?(new_coordinate)
+                        return false
+                    end
+                end
+                return true
             elsif coordinate_to_row(start) == @white_queen || coordinate_to_row(start) == @black_queen
             elsif coordinate_to_row(start) == @white_king || coordinate_to_row(start) == @black_king
             end
