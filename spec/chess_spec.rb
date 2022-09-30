@@ -34,14 +34,13 @@ describe Board do
             board = Board.new
             expect(board.valid_move?('g1', 'i3')).not_to be true
         end
-
     end
 
-    describe '#move_to_second_square' do
-        it 'moves a pawn two square ahead' do
+
+    describe '#opposite_side?' do
+        it 'returns true if the second square has a piece of the opposite color' do
             board = Board.new
-            board.move_to_second_square('a7', 'a5')
-            expect(board.coordinate_to_row('a5')).to eql("♟")
+            expect(board.opposite_side?('a2', 'a7')).to be true
         end
     end
 end

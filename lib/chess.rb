@@ -64,7 +64,178 @@ class Board
 
     end
 
-    
+    def opposite_side?(start, finish)
+        if coordinate_to_row(start) == "♙" 
+            if coordinate_to_row(finish) == "♚"
+                return true
+            elsif coordinate_to_row(finish) == "♝"
+                return true
+            elsif coordinate_to_row(finish) == "♜"
+                return true
+            elsif coordinate_to_row(finish) == "♞"
+                return true
+            elsif coordinate_to_row(finish) == "♛"
+                return true
+            elsif coordinate_to_row(finish) == "♟"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♕"
+            if coordinate_to_row(finish) == "♚"
+                return true
+            elsif coordinate_to_row(finish) == "♝"
+                return true
+            elsif coordinate_to_row(finish) == "♜"
+                return true
+            elsif coordinate_to_row(finish) == "♞"
+                return true
+            elsif coordinate_to_row(finish) == "♛"
+                return true
+            elsif coordinate_to_row(finish) == "♟"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♖"
+            if coordinate_to_row(finish) == "♚"
+                return true
+            elsif coordinate_to_row(finish) == "♝"
+                return true
+            elsif coordinate_to_row(finish) == "♜"
+                return true
+            elsif coordinate_to_row(finish) == "♞"
+                return true
+            elsif coordinate_to_row(finish) == "♛"
+                return true
+            elsif coordinate_to_row(finish) == "♟"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♘"
+            if coordinate_to_row(finish) == "♚"
+                return true
+            elsif coordinate_to_row(finish) == "♝"
+                return true
+            elsif coordinate_to_row(finish) == "♜"
+                return true
+            elsif coordinate_to_row(finish) == "♞"
+                return true
+            elsif coordinate_to_row(finish) == "♛"
+                return true
+            elsif coordinate_to_row(finish) == "♟"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♗"
+            if coordinate_to_row(finish) == "♚"
+                return true
+            elsif coordinate_to_row(finish) == "♝"
+                return true
+            elsif coordinate_to_row(finish) == "♜"
+                return true
+            elsif coordinate_to_row(finish) == "♞"
+                return true
+            elsif coordinate_to_row(finish) == "♛"
+                return true
+            elsif coordinate_to_row(finish) == "♟"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♔"
+            if coordinate_to_row(finish) == "♚"
+                return true
+            elsif coordinate_to_row(finish) == "♝"
+                return true
+            elsif coordinate_to_row(finish) == "♜"
+                return true
+            elsif coordinate_to_row(finish) == "♞"
+                return true
+            elsif coordinate_to_row(finish) == "♛"
+                return true
+            elsif coordinate_to_row(finish) == "♟"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♚"
+            if coordinate_to_row(finish) == "♙"
+                return true
+            elsif coordinate_to_row(finish) == "♕"
+                return true
+            elsif coordinate_to_row(finish) == "♖"
+                return true
+            elsif coordinate_to_row(finish) == "♘"
+                return true
+            elsif coordinate_to_row(finish) == "♗"
+                return true
+            elsif coordinate_to_row(finish) == "♔"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♝"
+            if coordinate_to_row(finish) == "♙"
+                return true
+            elsif coordinate_to_row(finish) == "♕"
+                return true
+            elsif coordinate_to_row(finish) == "♖"
+                return true
+            elsif coordinate_to_row(finish) == "♘"
+                return true
+            elsif coordinate_to_row(finish) == "♗"
+                return true
+            elsif coordinate_to_row(finish) == "♔"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♜"
+            if coordinate_to_row(finish) == "♙"
+                return true
+            elsif coordinate_to_row(finish) == "♕"
+                return true
+            elsif coordinate_to_row(finish) == "♖"
+                return true
+            elsif coordinate_to_row(finish) == "♘"
+                return true
+            elsif coordinate_to_row(finish) == "♗"
+                return true
+            elsif coordinate_to_row(finish) == "♔"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♞"
+            if coordinate_to_row(finish) == "♙"
+                return true
+            elsif coordinate_to_row(finish) == "♕"
+                return true
+            elsif coordinate_to_row(finish) == "♖"
+                return true
+            elsif coordinate_to_row(finish) == "♘"
+                return true
+            elsif coordinate_to_row(finish) == "♗"
+                return true
+            elsif coordinate_to_row(finish) == "♔"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♛"
+            if coordinate_to_row(finish) == "♙"
+                return true
+            elsif coordinate_to_row(finish) == "♕"
+                return true
+            elsif coordinate_to_row(finish) == "♖"
+                return true
+            elsif coordinate_to_row(finish) == "♘"
+                return true
+            elsif coordinate_to_row(finish) == "♗"
+                return true
+            elsif coordinate_to_row(finish) == "♔"
+                return true
+            end
+        elsif coordinate_to_row(start) == "♟"
+            if coordinate_to_row(finish) == "♙"
+                return true
+            elsif coordinate_to_row(finish) == "♕"
+                return true
+            elsif coordinate_to_row(finish) == "♖"
+                return true
+            elsif coordinate_to_row(finish) == "♘"
+                return true
+            elsif coordinate_to_row(finish) == "♗"
+                return true
+            elsif coordinate_to_row(finish) == "♔"
+                return true
+            end
+        end
+        return false
+    end
 
     def reassignment(first_square, second_square)
         if second_square[0] == 'a'
@@ -299,24 +470,38 @@ class Board
     def play_game
         print_board
         i = 0
-        until i == 5
+        until i == 10
             if @playerturn % 2 == 0
                 turn = 1
             else
                 turn = 2
             end
             puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3), or type save to save"
+            if (open_square?('f1') && open_square?('g1')) &&  (coordinate_to_row('h1') == "♖" && coordinate_to_row('e1') == "♔") && turn == 1
+                puts 'Or type castle to castle'
+            elsif (open_square?('f8') && open_square?('g8')) &&  (coordinate_to_row('h8') == "♜" && coordinate_to_row('e8') == "♚") && turn == 2
+                puts 'Or type castle to castle'
+            end
             starting_move = gets.chomp
-            puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
-            ending_move = gets.chomp
-            until valid_move?(starting_move, ending_move)
-                puts "That is an invalid move, try again"
-                puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
-                starting_move = gets.chomp
+            if starting_move == 'castle' && turn == 1
+                reassignment('h1', 'f1')
+                reassignment('e1', 'g1')
+            elsif starting_move == 'castle' && turn == 2
+                reassignment('h8', 'f8')
+                reassignment('e8', 'g8')
+            else
                 puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
                 ending_move = gets.chomp
+                until valid_move?(starting_move, ending_move)
+                    puts "That is an invalid move, try again"
+                    puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
+                    starting_move = gets.chomp
+                    puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
+                    ending_move = gets.chomp
+                end
+                reassignment(starting_move, ending_move)
             end
-            reassignment(starting_move, ending_move)
+            
             print_board
             @playerturn += 1
             i += 1
