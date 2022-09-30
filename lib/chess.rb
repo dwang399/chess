@@ -410,7 +410,61 @@ class Board
                 end
                 return true
             elsif (coordinate_to_row(start) == @white_queen && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_queen && (@playerturn % 2 == 1))
+                a = start[1].to_i
+                b = finish[1].to_i
+                if (finish.include?(start[0]))
+                    first_letter = start[0]
+                    until (a - b).abs == 1
+                        if a < b
+                            a += 1
+                        elsif a > b
+                            a -= 1
+                        end
+                        a = a.to_s
+                        new_coordinate = first_letter + a
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                        a = a.to_i
+                    end
+                    return true
+                elsif (finish.include?(start[1]))
+                    until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                        if start_letter_number[0] < finish_letter_number[0]
+                            start_letter_number[0] += 1
+                        elsif start_letter_number[0] > finish_letter_number[0]
+                            start_letter_number[0] -= 1
+                        end
+                        row_letter = start_letter_number[0].chr
+                        new_coordinate = row_letter + start[1]
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                    end
+                    return true
+                elsif (a - b).abs != (start_letter_number[0] - finish_letter_number[0]).abs
+                    return false
+                end
+                until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                    if a < b
+                        a += 1
+                    elsif b < a
+                        a -= 1
+                    end
+                    if start_letter_number[0] < finish_letter_number[0]
+                        start_letter_number[0] += 1
+                    elsif start_letter_number[0] > finish_letter_number[0]
+                        start_letter_number[0] -= 1
+                    end
+                    row_letter = start_letter_number[0].chr
+                    new_coordinate = row_letter + a.to_s
+                    unless open_square?(new_coordinate)
+                        return false
+                    end
+                end
+                return true
             elsif (coordinate_to_row(start) == @white_king && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_king && (@playerturn % 2 == 1))
+
             end
         end
     end
