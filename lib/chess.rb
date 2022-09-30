@@ -324,13 +324,15 @@ class Board
         end
         start_letter_number = start[0].bytes
         finish_letter_number = finish[0].bytes
-        if open_square?(finish)
+        if open_square?(finish) || opposite_side?(start, finish)
             if coordinate_to_row(start) == @white_pawn 
                 if start.include?('2') 
                     if (finish.include?("#{start[0]}4") && open_square?("#{start[0]}3")) || (finish.include?(start[0]) && finish.include?((start[1].to_i + 1).to_s))
                         return true
                     end
                 elsif (finish.include?(start[0]) && finish.include?((start[1].to_i + 1).to_s))
+                    return true
+                elsif (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i + 1 == finish[1].to_i) 
                     return true
                 end
             elsif coordinate_to_row(start) == @black_pawn
@@ -492,7 +494,7 @@ class Board
             else
                 puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
                 ending_move = gets.chomp
-                until valid_move?(starting_move, ending_move)
+                until valid_move?(starting_move, ending_move) 
                     puts "That is an invalid move, try again"
                     puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
                     starting_move = gets.chomp
