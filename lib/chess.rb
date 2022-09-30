@@ -325,31 +325,31 @@ class Board
         start_letter_number = start[0].bytes
         finish_letter_number = finish[0].bytes
         if open_square?(finish) || opposite_side?(start, finish)
-            if coordinate_to_row(start) == @white_pawn 
+            if coordinate_to_row(start) == @white_pawn && (@playerturn % 2 == 0)
                 if start.include?('2') 
-                    if (finish.include?("#{start[0]}4") && open_square?("#{start[0]}3")) || (finish.include?(start[0]) && finish.include?((start[1].to_i + 1).to_s))
+                    if ((finish.include?("#{start[0]}4") && open_square?("#{start[0]}3")) || (finish.include?(start[0]) && finish.include?((start[1].to_i + 1).to_s)) && open_square?(finish))
                         return true
                     end
-                elsif (finish.include?(start[0]) && finish.include?((start[1].to_i + 1).to_s))
+                elsif ((finish.include?(start[0]) && finish.include?((start[1].to_i + 1).to_s)) && open_square?(finish))
                     return true
                 elsif (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i + 1 == finish[1].to_i) 
                     return true
                 end
-            elsif coordinate_to_row(start) == @black_pawn
+            elsif coordinate_to_row(start) == @black_pawn && (@playerturn % 2 == 1)
                 if start.include?('7') 
-                    if (finish.include?("#{start[0]}5") && open_square?("#{start[0]}6"))|| (finish.include?(start[0]) && finish.include?((start[1].to_i - 1).to_s))
+                    if (finish.include?("#{start[0]}5") && open_square?("#{start[0]}6")) || (finish.include?(start[0]) && finish.include?((start[1].to_i - 1).to_s))
                         return true
                     end
                 elsif (finish.include?(start[0]) && finish.include?((start[1].to_i - 1).to_s))
                     return true
                 end
-            elsif coordinate_to_row(start) == @white_knight || coordinate_to_row(start) == @black_knight
+            elsif (coordinate_to_row(start) == @white_knight && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_knight && (@playerturn % 2 == 1))
                 if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i - finish[1].to_i).abs == 2
                     return true
                 elsif (start_letter_number[0] - finish_letter_number[0]).abs == 2 && (start[1].to_i - finish[1].to_i).abs == 1
                     return true
                 end
-            elsif coordinate_to_row(start) == @white_rook || coordinate_to_row(start) == @black_rook
+            elsif (coordinate_to_row(start) == @white_rook && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_rook && (@playerturn % 2 == 1))
                 if (finish.include?(start[0]))
                     first_letter = start[0]
                     a = start[1].to_i
@@ -375,7 +375,7 @@ class Board
                     end
                     return true
                 end
-            elsif coordinate_to_row(start) == @white_bishop || coordinate_to_row(start) == @black_bishop
+            elsif (coordinate_to_row(start) == @white_bishop && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_bishop && (@playerturn % 2 == 1))
                 a = start[1].to_i
                 b = finish[1].to_i
                 if (a - b).abs != (start_letter_number[0] - finish_letter_number[0]).abs
@@ -399,8 +399,8 @@ class Board
                     end
                 end
                 return true
-            elsif coordinate_to_row(start) == @white_queen || coordinate_to_row(start) == @black_queen
-            elsif coordinate_to_row(start) == @white_king || coordinate_to_row(start) == @black_king
+            elsif (coordinate_to_row(start) == @white_queen && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_queen && (@playerturn % 2 == 1))
+            elsif (coordinate_to_row(start) == @white_king && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_king && (@playerturn % 2 == 1))
             end
         end
     end
