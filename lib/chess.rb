@@ -35,6 +35,14 @@ class Board
         @blankrow7 = [@black_square, @white_square, @black_square, @white_square, @black_square, @white_square, @black_square, @white_square]
         @blankrow8 = [@white_square, @black_square, @white_square, @black_square, @white_square, @black_square, @white_square, @black_square]
         @playerturn = 0
+        @copyrow1 = @row1
+        @copyrow2 = @row2
+        @copyrow3 = @row3
+        @copyrow4 = @row4
+        @copyrow5 = @row5
+        @copyrow6 = @row6
+        @copyrow7 = @row7
+        @copyrow8 = @row8
     end
 
     def print_board
@@ -741,6 +749,85 @@ class Board
         end
     end
 
+    def preplan_move(first_square, second_square)
+        if second_square[0] == 'a'
+            column = 0
+        elsif second_square[0] == 'b'
+            column = 1
+        elsif second_square[0] == 'c'
+            column = 2
+        elsif second_square[0] == 'd'
+            column = 3
+        elsif second_square[0] == 'e'
+            column = 4
+        elsif second_square[0] == 'f'
+            column = 5
+        elsif second_square[0] == 'g'
+            column = 6
+        elsif second_square[0] == 'h'
+            column = 7
+        else
+            return false
+        end
+        if second_square[1] == '1' 
+            @row1[column] = coordinate_to_row(first_square)
+        elsif second_square[1] == '2' 
+            @row2[column] = coordinate_to_row(first_square)
+        elsif second_square[1] == '3' 
+            @row3[column] = coordinate_to_row(first_square)
+        elsif second_square[1] == '4' 
+            @row4[column] = coordinate_to_row(first_square)
+        elsif second_square[1] == '5' 
+            @row5[column] = coordinate_to_row(first_square)
+        elsif second_square[1] == '6'
+            @row6[column] = coordinate_to_row(first_square)
+        elsif second_square[1] == '7'
+            @row7[column] = coordinate_to_row(first_square)
+        elsif second_square[1] == '8'
+            @row8[column] = coordinate_to_row(first_square)
+        else
+            return false
+        end
+        if first_square[0] == 'a'
+            column = 0
+        elsif first_square[0] == 'b'
+            column = 1
+        elsif first_square[0] == 'c'
+            column = 2
+        elsif first_square[0] == 'd'
+            column = 3
+        elsif first_square[0] == 'e'
+            column = 4
+        elsif first_square[0] == 'f'
+            column = 5
+        elsif first_square[0] == 'g'
+            column = 6
+        elsif first_square[0] == 'h'
+            column = 7
+        else
+            return false
+        end
+        if first_square[1] == '1' 
+            @row1[column] = @blankrow1[column]
+        elsif first_square[1] == '2' 
+            @row2[column] = @blankrow2[column]
+        elsif first_square[1] == '3' 
+            @row3[column] = @blankrow3[column]
+        elsif first_square[1] == '4' 
+            @row4[column] = @blankrow4[column]
+        elsif first_square[1] == '5' 
+            @row5[column] = @blankrow5[column]
+        elsif first_square[1] == '6'
+            @row6[column] = @blankrow6[column]
+        elsif first_square[1] == '7'
+            @row7[column] = @blankrow7[column]
+        elsif first_square[1] == '8'
+            @row8[column] = @blankrow8[column]
+        else
+            return false
+        end
+    end
+
     def white_kings_coordinate
         possible_coordinates = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
         possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
@@ -897,6 +984,7 @@ class Board
     def play_game
         print_board
         i = 0
+        advance = true
         until i == 15
             if @playerturn % 2 == 0
                 turn = 1
@@ -924,15 +1012,54 @@ class Board
             else
                 puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
                 ending_move = gets.chomp
-
-                until valid_move?(starting_move, ending_move) 
-                    puts "That is an invalid move, try again"
-                    puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
-                    starting_move = gets.chomp
-                    puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
-                    ending_move = gets.chomp
+                if valid_move?(starting_move, ending_move)
+                    reassignment(starting_move, ending_move)
+                    if (white_check? && turn == 1) || (black_check? && turn == 2)
+                        reassignment(ending_move, starting_move)
+                        starting_move = 0
+                        ending_move = 0
+                        advance = false
+                        until advance
+                            puts "That is an invalid move, try again"
+                            puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
+                            starting_move = gets.chomp
+                            puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
+                            ending_move = gets.chomp
+                            p valid_move?(starting_move, ending_move)
+                            if valid_move?(starting_move, ending_move)
+                                reassignment(starting_move, ending_move)
+                                advance = true
+                            end
+                            p white_check?
+                            p black_check?
+                            if (white_check? && turn == 1) || (black_check? && turn == 2)
+                                reassignment(ending_move, starting_move)
+                                starting_move = 0
+                                ending_move = 0
+                                advance = false
+                            end
+                        end
+                    end
+                else
+                    until advance
+                        puts "That is an invalid move, try again"
+                        puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
+                        starting_move = gets.chomp
+                        puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
+                        ending_move = gets.chomp
+                        if valid_move?(starting_move, ending_move)
+                            reassignment(starting_move, ending_move)
+                            advance = true
+                        end
+                        if (white_check? && turn == 1) || (black_check? && turn == 2)
+                            reassignment(ending_move, starting_move)
+                            starting_move = 0
+                            ending_move = 0
+                            advance = false
+                        end
+                    end
                 end
-                reassignment(starting_move, ending_move) 
+                
 
 
                 if coordinate_to_row(ending_move) == @white_pawn && ending_move.include?('8')
