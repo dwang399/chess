@@ -763,12 +763,25 @@ class Board
         end
     end
 
-    def check?
+    def white_check?
         possible_coordinates = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
         possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
         possible_coordinates += ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
         possible_coordinates.each do |coordinate|
-            if white_is_checked?(coordinate) || black_is_checked?(coordinate)
+            if white_is_checked?(coordinate)
+                return true
+            end
+        end
+        return false
+        #if the valid move to a kings position returns true, check will return true
+    end
+
+    def black_check?
+        possible_coordinates = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
+        possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
+        possible_coordinates += ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
+        possible_coordinates.each do |coordinate|
+            if black_is_checked?(coordinate)
                 return true
             end
         end
@@ -890,7 +903,9 @@ class Board
             else
                 turn = 2
             end
-            if check? 
+            if white_check? && turn == 1
+                puts "Player #{turn}, you are checked. You must uncheck in order to continue playing"
+            elsif black_check? && turn == 2
                 puts "Player #{turn}, you are checked. You must uncheck in order to continue playing"
             end
             puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3), or type save to save"
