@@ -60,10 +60,6 @@ class Board
         end
     end
 
-    def conquer
-
-    end
-
     def opposite_side?(start, finish)
         if coordinate_to_row(start) == "♙" 
             if coordinate_to_row(finish) == "♚"
@@ -469,7 +465,39 @@ class Board
         end
     end
 
+    def white_kings_coordinate
+        possible_coordinates = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
+        possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
+        possible_coordinates += ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
+        possible_coordinates.each do |coordinate|
+            if coordinate_to_row(coordinate) == @white_king
+                return coordinate
+            end
+        end
+    end
+
+    def black_kings_coordinate
+        possible_coordinates = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
+        possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
+        possible_coordinates += ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
+        possible_coordinates.each do |coordinate|
+            if coordinate_to_row(coordinate) == @black_king
+                return coordinate
+            end
+        end
+    end
+
     def check?
+        possible_coordinates = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
+        possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
+        possible_coordinates += ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
+        possible_coordinates.each do |coordinate|
+            if valid_move?(coordinate, black_kings_coordinate) || valid_move?(coordinate, white_kings_coordinate)
+                return true
+            end
+        end
+        return false
+        #if the valid move to a kings position returns true, check will return true
     end
 
     def check_mate?
@@ -517,6 +545,50 @@ class Board
         return row[column]
     end
 
+    def pawn_promotion(first_square)
+        puts "Congratulations, your pawn is eligible for promotion! Please enter the piece you would like to replace it with"
+        piece = gets.chomp.downcase
+        if first_square[0] == 'a'
+            column = 0
+        elsif first_square[0] == 'b'
+            column = 1
+        elsif first_square[0] == 'c'
+            column = 2
+        elsif first_square[0] == 'd'
+            column = 3
+        elsif first_square[0] == 'e'
+            column = 4
+        elsif first_square[0] == 'f'
+            column = 5
+        elsif first_square[0] == 'g'
+            column = 6
+        elsif first_square[0] == 'h'
+            column = 7
+        else
+            return false
+        end
+        if @playerturn % 2 == 0
+            if piece == 'queen'
+                @row8[column] = @white_queen
+            elsif piece == 'bishop'
+                @row8[column] = @white_bishop
+            elsif piece == 'knight'
+                @row8[column] = @white_knight
+            elsif piece == 'rook'
+                @row8[column] = @white_rook
+            end
+        elsif @playerturn % 2 == 1    
+            if piece == 'queen'
+                @row1[column] = @black_queen
+            elsif piece == 'bishop'
+                @row1[column] = @black_bishop
+            elsif piece == 'knight'
+                @row1[column] = @black_knight
+            elsif piece == 'rook'
+                @row1[column] = @black_rook
+            end
+        end
+    end
     def save
         puts "Please choose a name for your save file"
         name = gets.chomp
@@ -536,11 +608,14 @@ class Board
     def play_game
         print_board
         i = 0
-        until i == 10
+        until i == 15
             if @playerturn % 2 == 0
                 turn = 1
             else
                 turn = 2
+            end
+            if check?
+                puts "Player #{turn}, you are checked. You must uncheck in order to continue playing"
             end
             puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3), or type save to save"
             if (open_square?('f1') && open_square?('g1')) &&  (coordinate_to_row('h1') == "♖" && coordinate_to_row('e1') == "♔") && turn == 1
@@ -558,7 +633,7 @@ class Board
             else
                 puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
                 ending_move = gets.chomp
-                until valid_move?(starting_move, ending_move) 
+                until valid_move?(starting_move, ending_move) && check? != true
                     puts "That is an invalid move, try again"
                     puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
                     starting_move = gets.chomp
@@ -566,6 +641,11 @@ class Board
                     ending_move = gets.chomp
                 end
                 reassignment(starting_move, ending_move)
+                if coordinate_to_row(ending_move) == @white_pawn && ending_move.include?('8')
+                    pawn_promotion(ending_move)
+                elsif coordinate_to_row(ending_move) == @black_pawn && ending_move.include?('1')
+                    pawn_promotion(ending_move)
+                end
             end
             
             print_board

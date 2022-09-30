@@ -17,7 +17,7 @@ describe Board do
     describe '#valid_move?' do
         it 'returns true if a pawn moves two squares on the opening move' do
             board = Board.new
-            expect(board.valid_move?('a7', 'a5')).to be true
+            expect(board.valid_move?('a2', 'a4')).to be true
         end
 
         it 'returns true if a pawn moves one square ahead' do
@@ -41,6 +41,20 @@ describe Board do
         it 'returns true if the second square has a piece of the opposite color' do
             board = Board.new
             expect(board.opposite_side?('a2', 'a7')).to be true
+        end
+    end
+
+    describe '#white_kings_coordinate' do
+        it 'returns e1 when the game has just started' do
+            board = Board.new
+            expect(board.white_kings_coordinate).to eql('e1')
+        end
+    end
+
+    describe '#black_kings_coordinate' do 
+        it 'returns e8 when the game has just started' do
+            board = Board.new
+            expect(board.black_kings_coordinate).to eql('e8')
         end
     end
 end
