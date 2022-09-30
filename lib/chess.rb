@@ -465,6 +465,282 @@ class Board
         end
     end
 
+    def black_is_checked?(start)
+        finish = black_kings_coordinate
+        if start == finish
+            return false
+        elsif open_square?(start)
+            return false
+        end
+        start_letter_number = start[0].bytes
+        finish_letter_number = finish[0].bytes
+        if open_square?(finish) || opposite_side?(start, finish)
+            if coordinate_to_row(start) == @white_pawn
+                if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i + 1 == finish[1].to_i) 
+                    return true
+                end
+            elsif coordinate_to_row(start) == @white_knight 
+                if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i - finish[1].to_i).abs == 2
+                    return true
+                elsif (start_letter_number[0] - finish_letter_number[0]).abs == 2 && (start[1].to_i - finish[1].to_i).abs == 1
+                    return true
+                end
+            elsif coordinate_to_row(start) == @white_rook && 
+                if (finish.include?(start[0]))
+                    first_letter = start[0]
+                    a = start[1].to_i
+                    b = finish[1].to_i
+                    until (a - b).abs == 1
+                        if a < b
+                            a += 1
+                        elsif a > b
+                            a -= 1
+                        end
+                        a = a.to_s
+                        new_coordinate = first_letter + a
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                        a = a.to_i
+                    end
+                    return true
+                elsif (finish.include?(start[1]))
+                    until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                        if start_letter_number[0] < finish_letter_number[0]
+                            start_letter_number[0] += 1
+                        elsif start_letter_number[0] > finish_letter_number[0]
+                            start_letter_number[0] -= 1
+                        end
+                        row_letter = start_letter_number[0].chr
+                        new_coordinate = row_letter + start[1]
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                    end
+                    return true
+                end
+            elsif coordinate_to_row(start) == @white_bishop 
+                a = start[1].to_i
+                b = finish[1].to_i
+                if (a - b).abs != (start_letter_number[0] - finish_letter_number[0]).abs
+                    return false
+                end
+                until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                    if a < b
+                        a += 1
+                    elsif b < a
+                        a -= 1
+                    end
+                    if start_letter_number[0] < finish_letter_number[0]
+                        start_letter_number[0] += 1
+                    elsif start_letter_number[0] > finish_letter_number[0]
+                        start_letter_number[0] -= 1
+                    end
+                    row_letter = start_letter_number[0].chr
+                    new_coordinate = row_letter + a.to_s
+                    unless open_square?(new_coordinate)
+                        return false
+                    end
+                end
+                return true
+            elsif coordinate_to_row(start) == @white_queen
+                a = start[1].to_i
+                b = finish[1].to_i
+                if (finish.include?(start[0]))
+                    first_letter = start[0]
+                    until (a - b).abs == 1
+                        if a < b
+                            a += 1
+                        elsif a > b
+                            a -= 1
+                        end
+                        a = a.to_s
+                        new_coordinate = first_letter + a
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                        a = a.to_i
+                    end
+                    return true
+                elsif (finish.include?(start[1]))
+                    until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                        if start_letter_number[0] < finish_letter_number[0]
+                            start_letter_number[0] += 1
+                        elsif start_letter_number[0] > finish_letter_number[0]
+                            start_letter_number[0] -= 1
+                        end
+                        row_letter = start_letter_number[0].chr
+                        new_coordinate = row_letter + start[1]
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                    end
+                    return true
+                elsif (a - b).abs != (start_letter_number[0] - finish_letter_number[0]).abs
+                    return false
+                end
+                until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                    if a < b
+                        a += 1
+                    elsif b < a
+                        a -= 1
+                    end
+                    if start_letter_number[0] < finish_letter_number[0]
+                        start_letter_number[0] += 1
+                    elsif start_letter_number[0] > finish_letter_number[0]
+                        start_letter_number[0] -= 1
+                    end
+                    row_letter = start_letter_number[0].chr
+                    new_coordinate = row_letter + a.to_s
+                    unless open_square?(new_coordinate)
+                        return false
+                    end
+                end
+                return true
+            elsif (coordinate_to_row(start) == @white_king && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_king && (@playerturn % 2 == 1))
+
+            end
+        end
+    end
+
+    def white_is_checked?(start)
+        finish = white_kings_coordinate
+        if start == finish
+            return false
+        elsif open_square?(start)
+            return false
+        end
+        start_letter_number = start[0].bytes
+        finish_letter_number = finish[0].bytes
+        if open_square?(finish) || opposite_side?(start, finish)
+            if coordinate_to_row(start) == @black_pawn 
+                if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i + 1 == finish[1].to_i) 
+                    return true
+                end
+            elsif coordinate_to_row(start) == @black_knight
+                if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i - finish[1].to_i).abs == 2
+                    return true
+                elsif (start_letter_number[0] - finish_letter_number[0]).abs == 2 && (start[1].to_i - finish[1].to_i).abs == 1
+                    return true
+                end
+            elsif coordinate_to_row(start) == @black_rook
+                if (finish.include?(start[0]))
+                    first_letter = start[0]
+                    a = start[1].to_i
+                    b = finish[1].to_i
+                    until (a - b).abs == 1
+                        if a < b
+                            a += 1
+                        elsif a > b
+                            a -= 1
+                        end
+                        a = a.to_s
+                        new_coordinate = first_letter + a
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                        a = a.to_i
+                    end
+                    return true
+                elsif (finish.include?(start[1]))
+                    until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                        if start_letter_number[0] < finish_letter_number[0]
+                            start_letter_number[0] += 1
+                        elsif start_letter_number[0] > finish_letter_number[0]
+                            start_letter_number[0] -= 1
+                        end
+                        row_letter = start_letter_number[0].chr
+                        new_coordinate = row_letter + start[1]
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                    end
+                    return true
+                end
+            elsif coordinate_to_row(start) == @black_bishop
+                a = start[1].to_i
+                b = finish[1].to_i
+                if (a - b).abs != (start_letter_number[0] - finish_letter_number[0]).abs
+                    return false
+                end
+                until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                    if a < b
+                        a += 1
+                    elsif b < a
+                        a -= 1
+                    end
+                    if start_letter_number[0] < finish_letter_number[0]
+                        start_letter_number[0] += 1
+                    elsif start_letter_number[0] > finish_letter_number[0]
+                        start_letter_number[0] -= 1
+                    end
+                    row_letter = start_letter_number[0].chr
+                    new_coordinate = row_letter + a.to_s
+                    unless open_square?(new_coordinate)
+                        return false
+                    end
+                end
+                return true
+            elsif coordinate_to_row(start) == @black_queen 
+                a = start[1].to_i
+                b = finish[1].to_i
+                if (finish.include?(start[0]))
+                    first_letter = start[0]
+                    until (a - b).abs == 1
+                        if a < b
+                            a += 1
+                        elsif a > b
+                            a -= 1
+                        end
+                        a = a.to_s
+                        new_coordinate = first_letter + a
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                        a = a.to_i
+                    end
+                    return true
+                elsif (finish.include?(start[1]))
+                    until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                        if start_letter_number[0] < finish_letter_number[0]
+                            start_letter_number[0] += 1
+                        elsif start_letter_number[0] > finish_letter_number[0]
+                            start_letter_number[0] -= 1
+                        end
+                        row_letter = start_letter_number[0].chr
+                        new_coordinate = row_letter + start[1]
+                        unless open_square?(new_coordinate)
+                            return false
+                        end
+                    end
+                    return true
+                elsif (a - b).abs != (start_letter_number[0] - finish_letter_number[0]).abs
+                    return false
+                end
+                until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                    if a < b
+                        a += 1
+                    elsif b < a
+                        a -= 1
+                    end
+                    if start_letter_number[0] < finish_letter_number[0]
+                        start_letter_number[0] += 1
+                    elsif start_letter_number[0] > finish_letter_number[0]
+                        start_letter_number[0] -= 1
+                    end
+                    row_letter = start_letter_number[0].chr
+                    new_coordinate = row_letter + a.to_s
+                    unless open_square?(new_coordinate)
+                        return false
+                    end
+                end
+                return true
+            elsif coordinate_to_row(start) == @black_king 
+
+            end
+        end
+    end
+
     def white_kings_coordinate
         possible_coordinates = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
         possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
@@ -492,7 +768,7 @@ class Board
         possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
         possible_coordinates += ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
         possible_coordinates.each do |coordinate|
-            if valid_move?(coordinate, black_kings_coordinate) || valid_move?(coordinate, white_kings_coordinate)
+            if white_is_checked?(coordinate) || black_is_checked?(coordinate)
                 return true
             end
         end
@@ -614,7 +890,7 @@ class Board
             else
                 turn = 2
             end
-            if check?
+            if check? 
                 puts "Player #{turn}, you are checked. You must uncheck in order to continue playing"
             end
             puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3), or type save to save"
@@ -633,14 +909,17 @@ class Board
             else
                 puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
                 ending_move = gets.chomp
-                until valid_move?(starting_move, ending_move) && check? != true
+
+                until valid_move?(starting_move, ending_move) 
                     puts "That is an invalid move, try again"
                     puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
                     starting_move = gets.chomp
                     puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
                     ending_move = gets.chomp
                 end
-                reassignment(starting_move, ending_move)
+                reassignment(starting_move, ending_move) 
+
+
                 if coordinate_to_row(ending_move) == @white_pawn && ending_move.include?('8')
                     pawn_promotion(ending_move)
                 elsif coordinate_to_row(ending_move) == @black_pawn && ending_move.include?('1')
