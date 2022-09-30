@@ -327,20 +327,22 @@ class Board
         if open_square?(finish) || opposite_side?(start, finish)
             if coordinate_to_row(start) == @white_pawn && (@playerturn % 2 == 0)
                 if start.include?('2') 
-                    if ((finish.include?("#{start[0]}4") && open_square?("#{start[0]}3")) || (finish.include?(start[0]) && finish.include?((start[1].to_i + 1).to_s)) && open_square?(finish))
+                    if ((finish.include?("#{start[0]}4") && open_square?("#{start[0]}3")) || (finish.include?(start[0]) && finish.include?((start[1].to_i + 1).to_s))) && open_square?(finish)
                         return true
                     end
-                elsif ((finish.include?(start[0]) && finish.include?((start[1].to_i + 1).to_s)) && open_square?(finish))
+                elsif finish.include?(start[0]) && finish.include?((start[1].to_i + 1).to_s) && open_square?(finish)
                     return true
                 elsif (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i + 1 == finish[1].to_i) 
                     return true
                 end
             elsif coordinate_to_row(start) == @black_pawn && (@playerturn % 2 == 1)
                 if start.include?('7') 
-                    if (finish.include?("#{start[0]}5") && open_square?("#{start[0]}6")) || (finish.include?(start[0]) && finish.include?((start[1].to_i - 1).to_s))
+                    if ((finish.include?("#{start[0]}5") && open_square?("#{start[0]}6")) || (finish.include?(start[0]) && finish.include?((start[1].to_i - 1).to_s))) && open_square?(finish)
                         return true
                     end
-                elsif (finish.include?(start[0]) && finish.include?((start[1].to_i - 1).to_s))
+                elsif finish.include?(start[0]) && finish.include?((start[1].to_i - 1).to_s) && open_square?(finish)
+                    return true
+                elsif (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i + 1 == finish[1].to_i) 
                     return true
                 end
             elsif (coordinate_to_row(start) == @white_knight && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_knight && (@playerturn % 2 == 1))
@@ -354,8 +356,12 @@ class Board
                     first_letter = start[0]
                     a = start[1].to_i
                     b = finish[1].to_i
-                    until a == b
-                        a += 1
+                    until (a - b).abs == 1
+                        if a < b
+                            a += 1
+                        elsif a > b
+                            a -= 1
+                        end
                         a = a.to_s
                         new_coordinate = first_letter + a
                         unless open_square?(new_coordinate)
@@ -365,8 +371,12 @@ class Board
                     end
                     return true
                 elsif (finish.include?(start[1]))
-                    until start_letter_number[0] == finish_letter_number[0]
-                        start_letter_number[0] += 1
+                    until (start_letter_number[0] - finish_letter_number[0]).abs == 1
+                        if start_letter_number[0] < finish_letter_number[0]
+                            start_letter_number[0] += 1
+                        elsif start_letter_number[0] > finish_letter_number[0]
+                            start_letter_number[0] -= 1
+                        end
                         row_letter = start_letter_number[0].chr
                         new_coordinate = row_letter + start[1]
                         unless open_square?(new_coordinate)
@@ -381,7 +391,7 @@ class Board
                 if (a - b).abs != (start_letter_number[0] - finish_letter_number[0]).abs
                     return false
                 end
-                until start_letter_number[0] == finish_letter_number[0]
+                until (start_letter_number[0] - finish_letter_number[0]).abs == 1
                     if a < b
                         a += 1
                     elsif b < a
