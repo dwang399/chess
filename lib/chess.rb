@@ -896,19 +896,46 @@ class Board
         #if the valid move to a kings position returns true, check will return true
     end
 
-    def check_mate?
+    def black_check_mate?
         #array_of_possible_moves.each do, if any move does not result in a check situation, return false
         possible_coordinates = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
         possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
         possible_coordinates += ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
-        possible_moves = []
-        #possible_coordinates.each do |coordinate_one|
-        #    possible_coordinates.each do |coordinate_two|
-        #        if 
-        #        end
-        #    end
-        #end
-        return false
+        possible_coordinates.each do |coordinate_one|
+            possible_coordinates.each do |coordinate_two|
+                if valid_move?(coordinate_one, coordinate_two)
+                    reassignment(coordinate_one, coordinate_two)
+                    if black_check? == false
+                        reassignment(coordinate_two, coordinate_one)
+                        return false
+                    else
+                        reassignment(coordinate_two, coordinate_one)
+                    end
+                end
+            end
+        end
+        return true
+    end
+
+    def white_check_mate?
+        #array_of_possible_moves.each do, if any move does not result in a check situation, return false
+        possible_coordinates = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
+        possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
+        possible_coordinates += ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
+        possible_coordinates.each do |coordinate_one|
+            possible_coordinates.each do |coordinate_two|
+                if valid_move?(coordinate_one, coordinate_two)
+                    reassignment(coordinate_one, coordinate_two)
+                    if white_check? == false
+                        reassignment(coordinate_two, coordinate_one)
+                        return false
+                    else
+                        reassignment(coordinate_two, coordinate_one)
+                    end
+                end
+            end
+        end
+        return true
     end
 
     def coordinate_to_row(coordinate)
@@ -1086,7 +1113,7 @@ class Board
         print_board
         i = 0
         advance = true
-        until check_mate?
+        until white_check_mate? || black_check_mate?
             if @playerturn % 2 == 0
                 turn = 1
                 other_player_turn = 2
@@ -1108,7 +1135,6 @@ class Board
             starting_move = gets.chomp
             if starting_move == 'save'
                 save
-                
                 return 0
             elsif starting_move == 'load'
                 load
@@ -1221,7 +1247,7 @@ class Board
             @playerturn += 1
 
         end
-        if check_mate? == true
+        if black_check_mate? == true || white_check_mate? == true
             puts "Sorry Player #{other_player_turn}. You have been checkmated. Congratulations Player #{turn}!"
         end
         ##until move()
