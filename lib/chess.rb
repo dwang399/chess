@@ -468,7 +468,13 @@ class Board
                 end
                 return true
             elsif (coordinate_to_row(start) == @white_king && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_king && (@playerturn % 2 == 1))
-
+                a = start[1].to_i
+                b = finish[1].to_i
+                if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (a - b).abs <= 1
+                    return true
+                elsif start_letter_number[0] == finish_letter_number[0] && (a - b).abs == 1
+                    return true
+                end
             end
         end
     end
@@ -605,8 +611,14 @@ class Board
                     end
                 end
                 return true
-            elsif (coordinate_to_row(start) == @white_king && (@playerturn % 2 == 0)) || (coordinate_to_row(start) == @black_king && (@playerturn % 2 == 1))
-
+            elsif coordinate_to_row(start) == @white_king 
+                a = start[1].to_i
+                b = finish[1].to_i
+                if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (a - b).abs <= 1
+                    return true
+                elsif start_letter_number[0] == finish_letter_number[0] && (a - b).abs == 1
+                    return true
+                end
             end
         end
     end
@@ -622,7 +634,7 @@ class Board
         finish_letter_number = finish[0].bytes
         if open_square?(finish) || opposite_side?(start, finish)
             if coordinate_to_row(start) == @black_pawn 
-                if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i + 1 == finish[1].to_i) 
+                if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (start[1].to_i - 1 == finish[1].to_i) 
                     return true
                 end
             elsif coordinate_to_row(start) == @black_knight
@@ -744,7 +756,13 @@ class Board
                 end
                 return true
             elsif coordinate_to_row(start) == @black_king 
-
+                a = start[1].to_i
+                b = finish[1].to_i
+                if (start_letter_number[0] - finish_letter_number[0]).abs == 1 && (a - b).abs <= 1
+                    return true
+                elsif start_letter_number[0] == finish_letter_number[0] && (a - b).abs == 1
+                    return true
+                end
             end
         end
     end
@@ -985,6 +1003,8 @@ class Board
         print_board
         i = 0
         advance = true
+        white_castle = 0
+        black_castle = 0
         until i == 15
             if @playerturn % 2 == 0
                 turn = 1
@@ -997,50 +1017,21 @@ class Board
                 puts "Player #{turn}, you are checked. You must uncheck in order to continue playing"
             end
             puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3), or type save to save"
-            if (open_square?('f1') && open_square?('g1')) &&  (coordinate_to_row('h1') == "♖" && coordinate_to_row('e1') == "♔") && turn == 1
+            if (open_square?('f1') && open_square?('g1')) &&  (coordinate_to_row('h1') == "♖" && coordinate_to_row('e1') == "♔") && turn == 1 && white_castle == 0
                 puts 'Or type castle to castle'
-            elsif (open_square?('f8') && open_square?('g8')) &&  (coordinate_to_row('h8') == "♜" && coordinate_to_row('e8') == "♚") && turn == 2
+            elsif (open_square?('f8') && open_square?('g8')) &&  (coordinate_to_row('h8') == "♜" && coordinate_to_row('e8') == "♚") && turn == 2 && black_castle == 0
                 puts 'Or type castle to castle'
             end
             starting_move = gets.chomp
-            if starting_move == 'castle' && turn == 1
+            if starting_move == 'castle' && turn == 1 
                 reassignment('h1', 'f1')
                 reassignment('e1', 'g1')
-            elsif starting_move == 'castle' && turn == 2
-                reassignment('h8', 'f8')
-                reassignment('e8', 'g8')
-            else
-                puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
-                ending_move = gets.chomp
-                if valid_move?(starting_move, ending_move)
-                    reassignment(starting_move, ending_move)
-                    if (white_check? && turn == 1) || (black_check? && turn == 2)
-                        reassignment(ending_move, starting_move)
-                        starting_move = 0
-                        ending_move = 0
-                        advance = false
-                        until advance
-                            puts "That is an invalid move, try again"
-                            puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
-                            starting_move = gets.chomp
-                            puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
-                            ending_move = gets.chomp
-                            p valid_move?(starting_move, ending_move)
-                            if valid_move?(starting_move, ending_move)
-                                reassignment(starting_move, ending_move)
-                                advance = true
-                            end
-                            p white_check?
-                            p black_check?
-                            if (white_check? && turn == 1) || (black_check? && turn == 2)
-                                reassignment(ending_move, starting_move)
-                                starting_move = 0
-                                ending_move = 0
-                                advance = false
-                            end
-                        end
-                    end
-                else
+                white_castle += 1
+                if white_check? 
+                    white_castle -= 1
+                    reassignment('f1', 'h1')
+                    reassignment('g1', 'e1')
+                    advance = false
                     until advance
                         puts "That is an invalid move, try again"
                         puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
@@ -1053,8 +1044,73 @@ class Board
                         end
                         if (white_check? && turn == 1) || (black_check? && turn == 2)
                             reassignment(ending_move, starting_move)
-                            starting_move = 0
-                            ending_move = 0
+                            advance = false
+                        end
+                    end
+                end
+            elsif starting_move == 'castle' && turn == 2 
+                reassignment('h8', 'f8')
+                reassignment('e8', 'g8')
+                black_castle += 1
+                if black_check? 
+                    black_castle -= 1
+                    reassignment('f8', 'h8')
+                    reassignment('g8', 'e8')
+                    advance = false
+                    until advance
+                        puts "That is an invalid move, try again"
+                        puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
+                        starting_move = gets.chomp
+                        puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
+                        ending_move = gets.chomp
+                        if valid_move?(starting_move, ending_move)
+                            reassignment(starting_move, ending_move)
+                            advance = true
+                        end
+                        if (white_check? && turn == 1) || (black_check? && turn == 2)
+                            reassignment(ending_move, starting_move)
+                            advance = false
+                        end
+                    end
+                end
+            else
+                puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
+                ending_move = gets.chomp
+                if valid_move?(starting_move, ending_move)
+                    reassignment(starting_move, ending_move)
+                    if (white_check? && turn == 1) || (black_check? && turn == 2)
+                        reassignment(ending_move, starting_move)
+                        advance = false
+                        until advance
+                            puts "That is an invalid move, try again"
+                            puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
+                            starting_move = gets.chomp
+                            puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
+                            ending_move = gets.chomp
+                            if valid_move?(starting_move, ending_move)
+                                reassignment(starting_move, ending_move)
+                                advance = true
+                            end
+                            if (white_check? && turn == 1) || (black_check? && turn == 2)
+                                reassignment(ending_move, starting_move)
+                                advance = false
+                            end
+                        end
+                    end
+                else
+                    advance = false
+                    until advance
+                        puts "That is an invalid move, try again"
+                        puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3)"
+                        starting_move = gets.chomp
+                        puts "Where would you like to move to? Enter a coordinate (e.g. a5)"
+                        ending_move = gets.chomp
+                        if valid_move?(starting_move, ending_move)
+                            reassignment(starting_move, ending_move)
+                            advance = true
+                        end
+                        if (white_check? && turn == 1) || (black_check? && turn == 2)
+                            reassignment(ending_move, starting_move)
                             advance = false
                         end
                     end
