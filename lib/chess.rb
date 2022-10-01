@@ -1111,8 +1111,9 @@ class Board
 
     def play_game
         print_board
-        i = 0
         advance = true
+        previous_start = '0'
+        previous_end = ''
         until white_check_mate? || black_check_mate?
             if @playerturn % 2 == 0
                 turn = 1
@@ -1132,13 +1133,15 @@ class Board
             elsif (open_square?('f8') && open_square?('g8')) &&  (coordinate_to_row('h8') == "♜" && coordinate_to_row('e8') == "♚") && turn == 2 && @black_castle == 0
                 puts 'Or type castle to castle'
             end
+            ##if previous_start.include?('2') && previous_end.include?('4') && turn == 2 && coordinate_to_row(previous_end) == @white_pawn 
+            ##    puts "Type en passant to en passant"
+            ##end
             starting_move = gets.chomp
             if starting_move == 'save'
                 save
-                return 0
+                break
             elsif starting_move == 'load'
                 load
-                print_board
                 play_game
             end
             if starting_move == 'castle' && turn == 1 
@@ -1233,25 +1236,20 @@ class Board
                         end
                     end
                 end
-                
-
-
                 if coordinate_to_row(ending_move) == @white_pawn && ending_move.include?('8')
                     pawn_promotion(ending_move)
                 elsif coordinate_to_row(ending_move) == @black_pawn && ending_move.include?('1')
                     pawn_promotion(ending_move)
                 end
             end
-
             print_board
             @playerturn += 1
-
         end
         if black_check_mate? == true || white_check_mate? == true
-            puts "Sorry Player #{other_player_turn}. You have been checkmated. Congratulations Player #{turn}!"
+            puts "Sorry Player #{other_player_turn}. You have been checkmated. Congratulations Player #{turn}!"  
         end
-        ##until move()
-        ##end
+        previous_start = starting_move
+        previous_end = ending_move
     end
 end
 board = Board.new
