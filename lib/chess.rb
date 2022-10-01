@@ -2,10 +2,10 @@ require 'erb'
 require 'yaml'
 class Board
     def initialize
-        black_square = "\u{25a0}"
-        white_square = "\u{25a1}"
-        @black_square = black_square.encode('utf-8')
-        @white_square = white_square.encode('utf-8')
+        @black = "\u{25a0}"
+        @white = "\u{25a1}"
+        @black_square = @black.encode('utf-8')
+        @white_square = @white.encode('utf-8')
         @black_pawn = "♟"
         @black_queen = "♛"
         @black_knight = "♞"
@@ -43,6 +43,8 @@ class Board
         @copyrow6 = @row6
         @copyrow7 = @row7
         @copyrow8 = @row8
+        @white_castle = 0
+        @black_castle = 0
     end
 
     def print_board
@@ -895,6 +897,18 @@ class Board
     end
 
     def check_mate?
+        #array_of_possible_moves.each do, if any move does not result in a check situation, return false
+        possible_coordinates = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']
+        possible_coordinates += ['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8']
+        possible_coordinates += ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8']
+        possible_moves = []
+        #possible_coordinates.each do |coordinate_one|
+        #    possible_coordinates.each do |coordinate_two|
+        #        if 
+        #        end
+        #    end
+        #end
+        return false
     end
 
     def coordinate_to_row(coordinate)
@@ -987,9 +1001,43 @@ class Board
         puts "Please choose a name for your save file"
         name = gets.chomp
         file = {
-
+            black: @black, 
+            white: @white,
+            black_square: @black_square,
+            white_square: @white_square,
+            black_pawn: @black_pawn,
+            black_queen: @black_queen, 
+            black_knight: @black_knight, 
+            black_rook: @black_rook, 
+            black_bishop: @black_bishop, 
+            black_king: @black_king,
+            white_pawn: @white_pawn, 
+            white_queen: @white_queen, 
+            white_rook: @white_rook, 
+            white_knight: @white_knight, 
+            white_bishop: @white_bishop,
+            white_king: @white_king, 
+            row1: @row1, 
+            row2: @row2, 
+            row3: @row3, 
+            row4: @row4, 
+            row5: @row5, 
+            row6: @row6, 
+            row7: @row7, 
+            row8: @row8, 
+            blankrow1: @blankrow1, 
+            blankrow2: @blankrow2,
+            blankrow3: @blankrow3, 
+            blankrow4: @blankrow4,
+            blankrow5: @blankrow5, 
+            blankrow6: @blankrow6, 
+            blankrow7: @blankrow7, 
+            blankrow8: @blankrow8, 
+            playerturn: @playerturn, 
+            white_castle: @white_castle,
+            black_castle: @black_castle
         }        
-        File.open(File.join(Dir.pwd, "/saved_games/#{name}.yaml"), 'w')  { |f| f.write(YAML.dump(file)) }
+        File.open(File.join(Dir.pwd, "/lib/saved_games/#{name}.yaml"), 'w')  { |f| f.write(YAML.dump(file)) }
         puts "File Saved Successfully!"
     end
 
@@ -997,38 +1045,82 @@ class Board
         puts "Enter the name of your save file"
         name = gets.chomp
         file = YAML.load(File.open(File.join(File.dirname(__FILE__), "/saved_games/#{name}.yaml")))
+        @black = file[:black]
+        @white = file[:white]
+        @black_square = file[:black_square]
+        @white_square = file[:white_square]
+        @black_pawn = file[:black_pawn]
+        @black_queen = file[:black_queen]
+        @black_knight = file[:black_knight]
+        @black_rook = file[:black_rook]
+        @black_bishop = file[:black_bishop]
+        @black_king = file[:black_king]
+        @white_pawn = file[:white_pawn]
+        @white_queen = file[:white_queen]
+        @white_rook = file[:white_rook]
+        @white_knight = file[:white_knight]
+        @white_bishop = file[:white_bishop]
+        @white_king = file[:white_king]
+        @row1 = file[:row1]
+        @row2 = file[:row2]
+        @row3 = file[:row3]
+        @row4 = file[:row4]
+        @row5 = file[:row5]
+        @row6 = file[:row6]
+        @row7 = file[:row7]
+        @row8 = file[:row8]
+        @playerturn = file[:playerturn]
+        @blankrow1 = file[:blankrow1]
+        @blankrow2 = file[:blankrow2]
+        @blankrow3 = file[:blankrow3]
+        @blankrow4 = file[:blankrow4]
+        @blankrow5 = file[:blankrow5]
+        @blankrow6 = file[:blankrow6]
+        @blankrow7 = file[:blankrow7]
+        @blankrow8 = file[:blankrow8]
+        @white_castle = file[:white_castle]
+        @black_castle = file[:black_castle]
     end
 
     def play_game
         print_board
         i = 0
         advance = true
-        white_castle = 0
-        black_castle = 0
-        until i == 15
+        until check_mate?
             if @playerturn % 2 == 0
                 turn = 1
+                other_player_turn = 2
             else
                 turn = 2
+                other_player_turn = 1
             end
             if white_check? && turn == 1
                 puts "Player #{turn}, you are checked. You must uncheck in order to continue playing"
             elsif black_check? && turn == 2
                 puts "Player #{turn}, you are checked. You must uncheck in order to continue playing"
             end
-            puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3), or type save to save"
-            if (open_square?('f1') && open_square?('g1')) &&  (coordinate_to_row('h1') == "♖" && coordinate_to_row('e1') == "♔") && turn == 1 && white_castle == 0
+            puts "Player #{turn}, Which piece would you like to move? Enter a coordinate (e.g. a3), or type save to save. Enter load to load a saved game."
+            if (open_square?('f1') && open_square?('g1')) &&  (coordinate_to_row('h1') == "♖" && coordinate_to_row('e1') == "♔") && turn == 1 && @white_castle == 0
                 puts 'Or type castle to castle'
-            elsif (open_square?('f8') && open_square?('g8')) &&  (coordinate_to_row('h8') == "♜" && coordinate_to_row('e8') == "♚") && turn == 2 && black_castle == 0
+            elsif (open_square?('f8') && open_square?('g8')) &&  (coordinate_to_row('h8') == "♜" && coordinate_to_row('e8') == "♚") && turn == 2 && @black_castle == 0
                 puts 'Or type castle to castle'
             end
             starting_move = gets.chomp
+            if starting_move == 'save'
+                save
+                
+                return 0
+            elsif starting_move == 'load'
+                load
+                print_board
+                play_game
+            end
             if starting_move == 'castle' && turn == 1 
                 reassignment('h1', 'f1')
                 reassignment('e1', 'g1')
-                white_castle += 1
+                @white_castle += 1
                 if white_check? 
-                    white_castle -= 1
+                    @white_castle -= 1
                     reassignment('f1', 'h1')
                     reassignment('g1', 'e1')
                     advance = false
@@ -1051,9 +1143,9 @@ class Board
             elsif starting_move == 'castle' && turn == 2 
                 reassignment('h8', 'f8')
                 reassignment('e8', 'g8')
-                black_castle += 1
+                @black_castle += 1
                 if black_check? 
-                    black_castle -= 1
+                    @black_castle -= 1
                     reassignment('f8', 'h8')
                     reassignment('g8', 'e8')
                     advance = false
@@ -1124,10 +1216,13 @@ class Board
                     pawn_promotion(ending_move)
                 end
             end
-            
+
             print_board
             @playerturn += 1
-            i += 1
+
+        end
+        if check_mate? == true
+            puts "Sorry Player #{other_player_turn}. You have been checkmated. Congratulations Player #{turn}!"
         end
         ##until move()
         ##end
